@@ -1,0 +1,8 @@
+Chr: !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+Dec:32              48               65                       90     97                       122
+Hex:x20             x30              x41                      x5A    x61                      x7A
+Oct:040             060              101                      132    141                      172
+
+http://www.asciitable.com/
+http://www.unicodetables.com/
+
