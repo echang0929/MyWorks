@@ -1,0 +1,111 @@
+
+= Installation Guide for BigSQL based on HDP
+
+== Preparing
+
+1. Add items in my MacPro's /etc/hosts file
+[source, text]
+9.111.215.28    bigdadm.diasx
+9.111.215.26    bigdtwo.diasx
+9.111.213.41    bigdone.diasx
+9.111.215.251   bigdmst.diasx
+
+2. Login to these machines with hostnames above in separated iTerm windows (split)
+3. Comment two update commands in /etc/cloud/cloud.cfg file
+4. Change root's passwords to Timz1712
+5. Update hostname, then reboot
+[source, shell]
+hostnamectl set-hostname bigdxxx.diasx
+reboot
+
+6. Connect to four machines without passwords, then login them respectively
+[source, shell]
+ssh-copy-id root@bigdxxx.diasx
+ssh root@bigdxxx.diasx
+
+== Steps on all four machines
+
+1. Add item in all four machines' /etc/hosts file
+[source, text]
+10.0.11.75  bigdadm.diasx bigdadm
+10.0.11.73  bigdtwo.diasx bigdtwo
+10.0.13.165 bigdone.diasx bigdone
+10.0.11.72  bigdmst.diasx bigdmst
+
+2. Create rsa keys and setup inter-connections without passwords
+[source, shell]
+ssh-keygen
+ssh-copy-id bigdxxx
+ssh-copy-id bigdxxx.diasx
+
+3. Download ibm-rhsm.sh and register machines with it
+https://ftp3.linux.ibm.com/rhsm.php
+[quote]
+account: zyibj@cn.ibm.com
+password: ZAQ!9ol.
+
+4. Run OS upgrade
+[source, shell]
+yum upgrade
+
+5. Install and set up ntp
+[source, shell]
+yum install ntp
+timedatectl set-ntp true
+systemctl start ntpd
+systemctl enable ntpd
+
+6. Install ksh for BigSQL extension
+[source, shell]
+yum install ksh
+
+7. Update file /etc/python/cert-verification.cfg
+[source, text]
+...
+## verify=platform_default
+verify=disable
+...
+
+== Steps on bigdadm.diasx
+
+1. Download ambari.repo file from Hortnetwork, referring to
+https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.0.0/bk_ambari-installation/content/ambari_repositories.html
+[source, shell]
+wget -nv http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.6.0.0/ambari.repo -O /etc/yum.repos.d/ambari.repo
+
+2. Install, setup and start ambari-server
+[source, shell]
+yum install ambari-server
+ambari-server setup
+ambari-server start
+
+3. Then we could access ambari server from our local browser:
+http://bigdadm.diasx:8080
+
+== Configuration and deploy HDP
+
+== Install BigSQL extensions
+
+1. Download BigSQL package from IBM XL download site
+
+2. Untar and run the following commands on bigdadm.diasx to install BigSQL components in ambari
+[source, shell]
+yum install redhat-lsb-core
+./ibmdb2bigsql-5.0.2.bin
+
+3. Then enable BigSQL extensions
+[source, shell]
+cd /var/lib/ambari-server/resources/extensions/IBM-Big_SQL/5.0.2.0/scripts
+./EnableBigSQLExtension.py
+
+4. Now we could login ambari from local browser and find BigSQL packages
+
+== Configuration and deploy BigSQL
+
+Some notification:
+
+If you use YARN to manage your Big SQL service:
+
+  * You must install the Big SQL service with at least *two* nodes in the cluster: One where *Big SQL head* resides, and another where *Big SQL Worker* resides. The Big SQL worker node must have a *NodeManager* component of YARN installed.
+  * A Big SQL worker node must be installed on all hosts that have a *NodeManager* component.
+  * When installing Big SQL, ensure that the *NodeManager* component is *not* installed on either the *head node* or the *secondary head node*, as this is not a supported configuration. It is fine to install the *Resource manager* on the same node.
