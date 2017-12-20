@@ -82,4 +82,30 @@ ambari-server start
 3. Then we could access ambari server from our local browser:
 http://bigdadm.diasx:8080
 
+== Configuration and deploy HDP
+
 == Install BigSQL extensions
+
+1. Download BigSQL package from IBM XL download site
+
+2. Untar and run the following commands on bigdadm.diasx to install BigSQL components in ambari
+[source, shell]
+yum install redhat-lsb-core
+./ibmdb2bigsql-5.0.2.bin
+
+3. Then enable BigSQL extensions
+[source, shell]
+cd /var/lib/ambari-server/resources/extensions/IBM-Big_SQL/5.0.2.0/scripts
+./EnableBigSQLExtension.py
+
+4. Now we could login ambari from local browser and find BigSQL packages
+
+== Configuration and deploy BigSQL
+
+Some notification:
+
+If you use YARN to manage your Big SQL service:
+
+  * You must install the Big SQL service with at least *two* nodes in the cluster: One where *Big SQL head* resides, and another where *Big SQL Worker* resides. The Big SQL worker node must have a *NodeManager* component of YARN installed.
+  * A Big SQL worker node must be installed on all hosts that have a *NodeManager* component.
+  * When installing Big SQL, ensure that the *NodeManager* component is *not* installed on either the *head node* or the *secondary head node*, as this is not a supported configuration. It is fine to install the *Resource manager* on the same node.
