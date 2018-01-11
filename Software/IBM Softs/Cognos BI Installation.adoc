@@ -1,0 +1,27 @@
+= Installation Guide for Cognos BI 10.2.2
+
+== Operation System
+
+Check Cognos BI 10.2.2 software requirements, and get that we could install it on Windows 2012 R2 Standard.
+
+http://www-01.ibm.com/support/docview.wss?uid=swg27042164
+
+
+
+== Installation Steps
+
+1. Install JDK 1.8.x, which downloanded from Oracle site
+
+2. Install all server components, including
+[source, text]
+* Business Intelligence Server
+* Business Intelligence PowerPlay Server
+* Business Intelligence Metric Server
+* Business Intelligence Samples
+* Software Development Kit
+When installing BI server, select quick installation which install DB2 for Cognos and configure BI with default settings.
+Other installations just select default options.
+
+== Restore backup files for the samples databases
+
+1. 
